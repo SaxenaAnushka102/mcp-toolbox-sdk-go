@@ -35,10 +35,11 @@ jobs:
             echo "new_version=$LATEST_VERSION_CLEAN" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Update version in files
+      - name: Update version in file
         if: steps.check_version.outputs.has_update == 'true'
         run: |
           NEW_VERSION=${{ steps.check_version.outputs.new_version }}
+          # Update the single integration.cloudbuild.yaml file at the root
           sed -i "s/_TOOLBOX_VERSION: '.*/_TOOLBOX_VERSION: '$NEW_VERSION'/" integration.cloudbuild.yaml
           
       - name: Create Pull Request
