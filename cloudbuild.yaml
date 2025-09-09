@@ -20,19 +20,19 @@ steps:
   - id: 'Create Pull Request'
     name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
+    env:
+      # Use an environment variable to pass the token securely
+      GH_TOKEN: '${_PAT}'
     args:
       - '-c'
       - |
-        # Use the PAT from the dispatcher build
+        # Use the PAT for git authentication
         git config --global user.email "anushkasaxenaa@google.com"
         git config --global user.name "Cloud Build Bot Anushka"
         git config --global url."https://${_PAT}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
         
         # Install the GitHub CLI
         apt-get update && apt-get install -y gh
-        
-        # Authenticate the gh command with the GH_TOKEN environment variable
-        export GH_TOKEN="${_PAT}"
         
         BRANCH_NAME="auto-update/toolbox-version-${_TOOLBOX_VERSION}"
         git checkout -b "$BRANCH_NAME"
