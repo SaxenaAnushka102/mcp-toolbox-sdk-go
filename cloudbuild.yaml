@@ -1,11 +1,10 @@
 steps:
-  - id: 'Update version in file'
+  - id: 'Update version in files'
     name: 'ubuntu'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        # Use the version from the dispatcher build
         _NEW_VERSION=${_TOOLBOX_VERSION}
         sed -i "s/_TOOLBOX_VERSION: '.*/_TOOLBOX_VERSION: '$_NEW_VERSION'/" integration.cloudbuild.yaml
         
@@ -19,6 +18,9 @@ steps:
         git config --global user.email "anushkasaxenaa@google.com"
         git config --global user.name "Cloud Build Bot Anushka"
         git config --global url."https://${_PAT}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+        
+        # Install the GitHub CLI
+        apt-get update && apt-get install -y gh
         
         BRANCH_NAME="auto-update/toolbox-version-${_TOOLBOX_VERSION}"
         git checkout -b "$BRANCH_NAME"
