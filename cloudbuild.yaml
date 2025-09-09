@@ -37,3 +37,4 @@ options:
   logging: CLOUD_LOGGING_ONLY
 substitutions:
   _TOOLBOX_VERSION: '0.12.0'
+  _PAT: 'your-pat-token'
