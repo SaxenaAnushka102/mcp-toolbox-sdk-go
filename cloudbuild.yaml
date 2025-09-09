@@ -1,4 +1,4 @@
-  steps:
+steps:
   - id: 'Get PAT from Secret Manager'
     name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
@@ -6,7 +6,7 @@
       - '-c'
       - |
         _PAT=$(gcloud secrets versions access latest --secret=github-pat --project=${_PROJECT_ID})
-        echo "_PAT=$_PAT" >> /workspace/env_vars.txt
+        echo "_PAT=${_PAT}" >> /workspace/env_vars.txt
         
   - id: 'Update version in files'
     name: 'ubuntu'
@@ -31,13 +31,16 @@
         # Install the GitHub CLI
         apt-get update && apt-get install -y gh
         
+        # Authenticate the gh command with the GH_TOKEN environment variable
+        export GH_TOKEN="${_PAT}"
+        
         BRANCH_NAME="auto-update/toolbox-version-${_TOOLBOX_VERSION}"
         git checkout -b "$BRANCH_NAME"
         git add .
         git commit -m "chore(deps): update genai-toolbox version to ${_TOOLBOX_VERSION}"
         git push origin "$BRANCH_NAME"
-        export GH_TOKEN="${_PAT}"
-
+        
+        # Create the PR
         gh pr create --title "chore(deps): update genai-toolbox version to ${_TOOLBOX_VERSION}" --body "Automated update to version ${_TOOLBOX_VERSION}" --head "$BRANCH_NAME"
 
 options:
