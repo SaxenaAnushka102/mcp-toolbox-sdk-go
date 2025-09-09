@@ -1,4 +1,13 @@
 steps:
+  - id: 'Get PAT from Secret Manager'
+    name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        _PAT=$(gcloud secrets versions access latest --secret=github-pat --project=${_PROJECT_ID})
+        echo "_PAT=$_PAT" >> /workspace/env_vars.txt
+        
   - id: 'Update version in files'
     name: 'ubuntu'
     entrypoint: 'bash'
