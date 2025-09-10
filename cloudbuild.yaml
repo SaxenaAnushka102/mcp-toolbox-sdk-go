@@ -5,8 +5,8 @@ steps:
     args:
       - '-c'
       - |
-        _NEW_VERSION=${_TOOLBOX_VERSION}
-        sed -i "s/_TOOLBOX_VERSION: '.*/_TOOLBOX_VERSION: '$_NEW_VERSION'/" integration.cloudbuild.yaml
+        # Use the version from the dispatcher build
+        sed -i "s/_TOOLBOX_VERSION: '.*/_TOOLBOX_VERSION: '${_TOOLBOX_VERSION}'/" integration.cloudbuild.yaml
         
   - id: 'Create Pull Request'
     name: 'gcr.io/cloud-builders/gcloud'
@@ -17,7 +17,7 @@ steps:
     args:
       - '-c'
       - |
-        # Use the PAT from the dispatcher build
+        # Use the PAT for git authentication
         git config --global user.email "anushkasaxenaa@google.com"
         git config --global user.name "Cloud Build Bot Anushka"
         git config --global url."https://${_PAT}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
@@ -31,6 +31,7 @@ steps:
         git commit -m "chore(deps): update genai-toolbox version to ${_TOOLBOX_VERSION}"
         git push origin "$BRANCH_NAME"
         
+        # Create the PR
         gh pr create --title "chore(deps): update genai-toolbox version to ${_TOOLBOX_VERSION}" --body "Automated update to version ${_TOOLBOX_VERSION}" --head "$BRANCH_NAME"
 
 options:
