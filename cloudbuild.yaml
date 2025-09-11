@@ -26,10 +26,7 @@ steps:
       - '-c'
       - >
         apt-get update && apt-get install -y gh
-
-
-        gh auth login --with-token < env_vars.txt
-        echo "$_PAT" | gh auth login --with-token
+        
         git config --global user.email "anushkasaxenaa@google.com"
 
         git config --global user.name "Cloud Build Bot Anushka"
@@ -37,6 +34,8 @@ steps:
         git config --global 
         url."https://${_PAT}:x-oauth-basic@github.com/".insteadOf
         "https://github.com/"
+        gh auth login --with-token < env_vars.txt
+        echo "$_PAT" | gh auth login --with-token
 
         BRANCH_NAME="auto-update/toolbox-version-${_TOOLBOX_VERSION}"
 
