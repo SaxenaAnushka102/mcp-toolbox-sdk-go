@@ -31,7 +31,7 @@ steps:
 
         git config --global user.name "Cloud Build Bot Anushka"
 
-        git config --global
+        git config --global --add
         url."https://${_PAT}:x-oauth-basic@github.com/".insteadOf
         "https://github.com/"
 
