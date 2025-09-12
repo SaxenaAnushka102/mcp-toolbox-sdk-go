@@ -25,6 +25,7 @@ steps:
     args:
       - '-c'
       - >
+        # Install github cli
         apt-get update && apt-get install -y gh
         
         git config --global user.email "anushkasaxenaa@google.com"
