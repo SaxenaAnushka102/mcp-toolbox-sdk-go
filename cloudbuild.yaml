@@ -22,12 +22,11 @@ steps:
         git config --global user.email "anushkasaxenaa@google.com"
         git config --global user.name "Cloud Build Bot Anushka"
         git config --global url."https://${_PAT}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-      
-        echo "$_PAT" | gh auth login --with-token
-        gh auth status
         
         BRANCH_NAME="auto-update/toolbox-version-${_TOOLBOX_VERSION}"
         git checkout -b "$BRANCH_NAME"
+        echo "$_PAT" | gh auth login --with-token
+        gh auth status
         git add .
         git commit -m "chore(deps): update genai-toolbox version to ${_TOOLBOX_VERSION}"
         git push origin "$BRANCH_NAME"
