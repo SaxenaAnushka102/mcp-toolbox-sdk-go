@@ -16,16 +16,16 @@ steps:
       - |
         apt-get update && apt-get install -y gh
         # Get PAT from Secret Manager and store it in an environment variable
-        _PAT=$(gcloud secrets versions access latest --secret=github-pat --project=${_PROJECT_ID})
-        echo "Retrieved PAT (first 5 characters): ${_PAT:0:5}..."
+        export GH_TOKEN=$(gcloud secrets versions access latest --secret=github-pat --project=${_PROJECT_ID})
+        echo "Retrieved PAT (first 5 characters): ${GH_TOKEN:0:5}..."
         # Use the PAT for Git authentication
         git config --global user.email "anushkasaxenaa@google.com"
         git config --global user.name "Cloud Build Bot Anushka"
-        git config --global url."https://${_PAT}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+        git config --global url."https://${GH_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
         
         BRANCH_NAME="auto-update/toolbox-version-${_TOOLBOX_VERSION}"
         git checkout -b "$BRANCH_NAME"
-        echo "$_PAT" | gh auth login --with-token
+        # echo "$GH_TOKEN" | gh auth login --with-token
         gh auth status
         git add .
         git commit -m "chore(deps): update genai-toolbox version to ${_TOOLBOX_VERSION}"
