@@ -14,6 +14,7 @@ steps:
     args:
       - '-c'
       - |
+        apt-get update && apt-get install -y gh
         # Get PAT from Secret Manager and store it in an environment variable
         _PAT=$(gcloud secrets versions access latest --secret=github-pat --project=${_PROJECT_ID})
         echo "Retrieved PAT (first 5 characters): ${_PAT:0:5}..."
@@ -22,8 +23,6 @@ steps:
         git config --global user.name "Cloud Build Bot Anushka"
         git config --global url."https://${_PAT}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
       
-        # Install the GitHub CLI
-        apt-get update && apt-get install -y gh
         echo "$_PAT" | gh auth login --with-token
         gh auth status
         
