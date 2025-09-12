@@ -11,14 +11,12 @@ steps:
   - id: 'Create Pull Request'
     name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
+    env:
+      GH_TOKEN: $(gcloud secrets versions access latest --secret=github-pat --project=${_PROJECT_ID})
     args:
       - '-c'
       - |
         apt-get update && apt-get install -y gh
-        # Get PAT from Secret Manager and store it in an environment variable
-        export GH_TOKEN=$(gcloud secrets versions access latest --secret=github-pat --project=${_PROJECT_ID})
-        echo "Retrieved PAT (first 5 characters): ${GH_TOKEN:0:5}..."
-        # Use the PAT for Git authentication
         git config --global user.email "anushkasaxenaa@google.com"
         git config --global user.name "Cloud Build Bot Anushka"
         git config --global url."https://${GH_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
