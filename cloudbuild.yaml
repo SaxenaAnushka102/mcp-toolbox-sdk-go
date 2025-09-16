@@ -17,7 +17,7 @@ steps:
         # 1. RETRIEVE PAT & SET ENV VARIABLE
         # This retrieves the secret value and sets _GH_TOKEN for this shell session.
         # This must be done inside the step that uses the variable.
-        export _GH_TOKEN=$(gcloud secrets versions access latest --secret=pat --project=${_PROJECT_ID})
+        export _GH_TOKEN=$(gcloud secrets versions access latest --secret=github-pat --project=${_PROJECT_ID})
 
         # 2. Configure Git with the PAT for push authentication
         git config --global user.email "anushkasaxenaa@google.com"
