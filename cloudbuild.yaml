@@ -22,7 +22,7 @@ steps:
         # 2. Configure Git with the PAT for push authentication
         git config --global user.email "anushkasaxenaa@google.com"
         git config --global user.name "Cloud Build Bot Anushka"
-        git config --global url."https://${_GH_TOKEN}@github.com/".insteadOf "https://github.com/"
+        git config --global url."https://SaxenaAnushka102:${_GH_TOKEN}@github.com/".insteadOf "https://github.com/"
         
         # 3. Install the GitHub CLI
         apt-get update && apt-get install -y gh
@@ -41,3 +41,4 @@ options:
   logging: CLOUD_LOGGING_ONLY
 substitutions:
   _TOOLBOX_VERSION: '0.12.0'
+  _PROJECT_ID: anushkasaxenaa-playground
