@@ -9,9 +9,9 @@ steps:
         sed -i "s/_TOOLBOX_VERSION: '.*/_TOOLBOX_VERSION: '$_NEW_VERSION'/" integration.cloudbuild.yaml
         
   - id: 'Create Pull Request'
+    name: 'gcr.io/cloud-builders/gcloud'
     uses: googleapis/code-suggester@v2
     env:
-      # Use the PAT retrieved from Secret Manager to authenticate the action
       ACCESS_TOKEN: $(gcloud secrets versions access latest --secret=github-pat --project=${_PROJECT_ID})
     with:
       command: pr
