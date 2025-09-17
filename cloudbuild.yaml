@@ -1,18 +1,13 @@
 steps:
-  # STEP 0: Get PAT from Secret Manager
-  # This step retrieves the token and makes it available to subsequent steps.
   - id: 'Get PAT from Secret Manager'
     name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        # Retrieve the PAT value and store it in a file.
         _PAT=$(gcloud secrets versions access latest --secret=github-pat --project=${_PROJECT_ID})
         echo "_PAT=$_PAT" >> /workspace/env_vars.txt
         
-  # STEP 1: Update version in files
-  # (No change to this logic, kept separate for clarity)
   - id: 'Update version in files'
     name: 'ubuntu'
     entrypoint: 'bash'
@@ -21,14 +16,10 @@ steps:
       - |
         source /workspace/env_vars.txt
         NEW_VERSION=${_TOOLBOX_VERSION}
-        # Update the version in the file
         sed -i "s/_TOOLBOX_VERSION: '.*/_TOOLBOX_VERSION: '$NEW_VERSION'/" integration.cloudbuild.yaml
 
-  # STEP 2: Create Pull Request using Code Suggester
-  # This step uses the external action, so it must be separate and correctly formatted.
   - id: 'Create Pull Request'
     uses: googleapis/code-suggester@v2
-    # Load the PAT from the file created in Step 0
     env:
       ACCESS_TOKEN: $(cat /workspace/env_vars.txt | grep _PAT= | cut -d= -f2)
     with:
