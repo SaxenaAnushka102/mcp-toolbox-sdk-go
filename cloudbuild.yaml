@@ -21,7 +21,7 @@ steps:
       message: 'chore(deps): update genai-toolbox version to ${_TOOLBOX_VERSION}'
       force: true
       fork: true
-      
+        
 options:
   logging: CLOUD_LOGGING_ONLY
 substitutions:
