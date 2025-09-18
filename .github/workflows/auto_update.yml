@@ -1,0 +1,42 @@
+name: Auto-Update Toolbox Version
+
+on:
+  repository_dispatch:
+    types: [genai-toolbox-update]
+  workflow_dispatch:
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to push changes and create PR
+      pull-requests: write # Required to create PR
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Update version in file
+        run: |
+          NEW_VERSION=${{ github.event.client_payload.new_version }}
+          # Remove the 'v' prefix from the version tag
+          NEW_VERSION_CLEAN=$(echo "$NEW_VERSION" | sed 's/^v//')
+
+          # Update the single integration.cloudbuild.yaml file at the root
+          sed -i "s/_TOOLBOX_VERSION: '.*/_TOOLBOX_VERSION: '$NEW_VERSION_CLEAN'/" integration.cloudbuild.yaml
+
+          # Stage changes for code-suggester
+          git add integration.cloudbuild.yaml
+
+      - name: Create Pull Request
+        env:
+          ACCESS_TOKEN: ${{ secrets.YOSHI_CODE_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Fallback for some operations
+        uses: googleapis/code-suggester@v2
+        with:
+          command: create_pr
+          branch: 'auto-update/go-toolbox-version'
+          message: 'chore(deps): update genai-toolbox version to ${{ github.event.client_payload.new_version }}'
+          title: 'chore(deps): update genai-toolbox version to ${{ github.event.client_payload.new_version }}'
+          body: 'This PR was automatically generated to update the _TOOLBOX_VERSION to ${{ github.event.client_payload.new_version }}.'
+          # primary: ${{ github.event.repository.default_branch }} # Optional: Specify base branch if not default
