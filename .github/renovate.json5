@@ -9,7 +9,7 @@
     ':prHourlyLimitNone',
     ':preserveSemverRanges',
   ],
-  minimumReleaseAge: '3',
+  minimumReleaseAge: '3 days',
   rebaseWhen: 'conflicted',
   configMigration: true,
   dependencyDashboardLabels: [
